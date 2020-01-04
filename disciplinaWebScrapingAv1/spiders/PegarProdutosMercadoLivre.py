@@ -4,25 +4,60 @@
 # o preço de todos esses produtos no mercado livre, com paginação incluída.
 # Busque uma forma de passar um parâmetro para o seu programa.
 
+# scrapy crawl PegarProdutosMercadoLivre -o pesquisa_produtos_mercado_livre.csv -a pesquisa=super-mario
+
 import scrapy
 
 
 class PegarprodutosmercadolivreSpider(scrapy.Spider):
+
     name = 'PegarProdutosMercadoLivre'
-    pesquisa = 'cadeira'
-    start_urls = ['https://lista.mercadolivre.com.br/' + pesquisa + '/']
+
+    def __init__(self, pesquisa=None, *args, **kwargs):
+        super(PegarprodutosmercadolivreSpider, self).__init__(*args, **kwargs)
+        self.start_urls = ['https://lista.mercadolivre.com.br/%s' % pesquisa]
 
     def parse(self, response):
         produtos = response.xpath('/html/body/main/div[1]/div/section/ol/li')
 
         for produto in produtos:
-            descricao = produto.xpath(
-                './/h2/span[@class="main-title"]/text()').extract_first()
-            precoFracao = produto.xpath(
-                './/span[@class="price__fraction"]/text()').extract_first()
-            precoDecimal = produto.xpath(
-                './/span[@class="price__decimals"]/text()').extract_first()
-            precoFinal = precoFracao + ',' + \
-                ('00' if precoDecimal == None else precoDecimal)
-            print('Produto | Preço')
-            print(descricao + ' | ' + precoFinal)
+
+            link_detail = produto.xpath(
+                './/a[@class="item__info-title"]/@href').extract_first()
+
+            yield scrapy.Request(
+                url=link_detail,
+                callback=self.parse_detail
+            )
+
+    def parse_detail(self, response):
+
+        descricao = (response.xpath(
+            './/h1[contains(@class,"item-title__primary")]/text()').extract_first()).strip()
+
+        imagem = response.xpath(
+            './/div/figure[contains(@class, "gallery-image-container")]/a/img/@src').extract_first()
+        imagem = 'sem imagem' if imagem == None else imagem
+
+        precoFracao = response.xpath(
+            './/span[@class="price-tag-fraction"]/text()').extract_first()
+
+        precoDecimal = response.xpath(
+            './/span[@class="price-tag-cents"]/text()').extract_first()
+
+        precoFinal = float(precoFracao + '.' +
+                           ('00' if precoDecimal == None else precoDecimal))
+
+        quantidade_disponivel = response.xpath(
+            './/span[@class="dropdown-quantity-available"]/text()').extract_first()
+
+        produto_nota = response.xpath(
+            './/span[@class="review-summary-average"]/text()').extract_first()
+
+        yield {
+            'produto': descricao,
+            'preço': precoFinal,
+            'nota': produto_nota,
+            'disponibilidade': quantidade_disponivel,
+            'imagem': imagem
+        }
