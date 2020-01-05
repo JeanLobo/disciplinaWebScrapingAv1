@@ -23,11 +23,22 @@ class PegarprodutosmercadolivreSpider(scrapy.Spider):
         for produto in produtos:
 
             link_detail = produto.xpath(
-                './/a[@class="item__info-title"]/@href').extract_first()
+                './/a[contains(@class,"item__js-link")]/@href').extract_first()
 
             yield scrapy.Request(
                 url=link_detail,
                 callback=self.parse_detail
+            )
+
+        next_page = response.xpath(
+            './/a[contains(@class,"prefetch")]/@href')
+
+        print(next_page.extract_first())
+
+        if next_page:
+            yield scrapy.Request(
+                url=next_page.extract_first(),
+                callback=self.parse
             )
 
     def parse_detail(self, response):
