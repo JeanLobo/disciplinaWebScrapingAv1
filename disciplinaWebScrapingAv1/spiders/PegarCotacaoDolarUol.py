@@ -5,7 +5,10 @@
 # capturado do site no momento. Procure uma forma de omitir as mensagens de log na
 # execução do seu programa para aparecer apenas essa mensagem como saída.
 
+# scrapy crawl PegarCotacaoDolarUol -s LOG_ENABLED=False
+
 import scrapy
+
 
 class PegarcotacaodolaruolSpider(scrapy.Spider):
     name = 'PegarCotacaoDolarUol'
