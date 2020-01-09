@@ -19,7 +19,8 @@ class PegarprodutosmercadolivreSpider(scrapy.Spider):
         self.start_urls = ['https://lista.mercadolivre.com.br/%s' % pesquisa]
 
     def parse(self, response):
-        produtos = response.xpath('/html/body/main/div[1]/div/section/ol/li')
+        # produtos = response.xpath('/html/body/main/div[1]/div/section/ol/li')
+        produtos = response.xpath('.//ol[contains(@class,"section") and contains(@class,"search-results")]/li')
 
         if self.proxima_pagina == 1:
             print('Iniciando crawler...')
@@ -27,9 +28,8 @@ class PegarprodutosmercadolivreSpider(scrapy.Spider):
 
         for produto in produtos:
 
-            link_detail = produto.xpath(
-                './/a[contains(@class,"item__js-link")]/@href').extract_first()
-
+            link_detail = produto.xpath('.//a[contains(@class,"item__js-link")]/@href').extract_first()
+       
             yield scrapy.Request(
                 url=link_detail,
                 callback=self.parse_detail

@@ -91,6 +91,6 @@ ITEM_PIPELINES = {
 #HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
 
 
-MONGO_URI = 'localhost'
+MONGO_URI = 'localhost:27017'
 #MONGO_URI = 'mongodb+srv://jeanloboxd:Reloadxd1@db-crawler-ecommerce-qtvaa.mongodb.net/test?retryWrites=true&w=majority'
-MONGO_DATABASE = 'crawlerDatabase'  # Mercado Livre
+MONGO_DATABASE = 'crawler_database'  # Mercado Livre

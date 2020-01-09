@@ -1,11 +1,8 @@
 import pymongo
-#import dns
-
 
 class MongoPipeline(object):
-
-    # Pesquisa de produtos no Mercado Livre
-    collection_name = 'crawlerCollection'
+    
+    collection_name = 'crawler_collection'
 
     def __init__(self, mongo_uri, mongo_db):
         self.mongo_uri = mongo_uri
