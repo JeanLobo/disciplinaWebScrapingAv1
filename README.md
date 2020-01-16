@@ -41,7 +41,7 @@ Quais ameaças capturadas automáticas proporcionam para sistemas web?
 
 Você diria que bots ou crawlers são programas facilmente paralelizáveis? Se sim, explique como isso seria implementado dando um exemplo?
 
-**_Sim, são sim, e já é comum esse tipo de implemntação, pois no caso de coleta de dados e ecommerces, é eventualmente necessário acessar a página de detalhes de cada resultado, a exemplo do que foi feito na questão 2 dessa atividade no caso no spider PegarProdutosMercadoLivre, abaixo segue o exemplo_**
+**_Sim, são sim, e já é comum esse tipo de implemntação, pois no caso de coleta de dados em ecommerces, é eventualmente necessário acessar a página de detalhes de cada item para cada lista de resultados, a exemplo do que foi feito na questão 2 dessa atividade no caso do spider PegarProdutosMercadoLivre, abaixo segue o exemplo_**
 
     def parse(self, response):
         # produtos = response.xpath('/html/body/main/div[1]/div/section/ol/li')
@@ -60,6 +60,6 @@ Você diria que bots ou crawlers são programas facilmente paralelizáveis? Se s
                 callback=self.parse_detail
             )
 
-**_Dentro do metodo parse(self, response), a página de resultados é interada para ler produto a produto, e a cada interação, o link da página de detalhes é capturado para realizar um novo request para pegar os detalhes do item e após isso segue para a próxima interação._**
+**_Dentro do metodo parse(self, response), a página de resultados é interada para ler produto a produto, e a cada interação, o link da página de detalhes é capturado para realizar um novo request para pegar os detalhes do item atual e após isso segue para a próxima interação._**
 
 ​
